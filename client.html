@@ -1,13 +1,12 @@
 <!DOCTYPE html>
 <html>
-<head>
+  <title>Twidder</title>
   <link href="client.css" type="text/css" rel="stylesheet">
   <script src="client.js" type="text/javascript"></script>
   <script src="serverstub.js" type="text/javascript"></script>
   <script type="text/view" id="welcomeView">
-    <div id="welcome">
-      <div id="logo">
-      </div>
+    <div id="welcome" class="view">
+      <div id="logo"></div>
       <div id="login">
 	<h1>Login</h1>
 	<form id="loginForm">
@@ -114,7 +113,7 @@
     </div>
   </script>
   <script type="text/view" id="profileView">
-    <div id="profile">
+    <div id="profile" class="view">
       <div id="menu">
 	<div class="menuItem selected" id="homeButton">
 	  Home
@@ -125,42 +124,32 @@
 	<div class="menuItem" id="accountButton">
 	  Account
 	</div>
-	<div id="signOut" class="menuItem">
+	<div id="signOut">
 	  Sign out
 	</div>
       </div>
       <div id="contentContainer">
 	<div id="homeView" class="content selectedContent">
-	  <div id="profileInformation">
+	  <div id="homeProfileInformation" class="profileInformation">
 	    <h1>Welcome</h1>
 	    <h2>Profile information</h2>
-	    <p id="profileInfoName">
-	      <span>Name: </span>
-	    </p>
-	    <p id="profileInfoEmail">	      
-	      <span>Email: </span>
-	    </p>
-	    <p id="profileInfoGender">	      
-	      <span>Gender: </span>
-	    </p>
-	    <p id="profileInfoCity">	      
-	      <span>City: </span>
-	    </p>
-	    <p id="profileInfoCountry">	      
-	      <span>Country: </span>
-	    </p>
+	    <p id="profileInfoName"></p>
+	    <p id="profileInfoEmail"></p>
+	    <p id="profileInfoGender"></p>
+	    <p id="profileInfoCity"></p>
+	    <p id="profileInfoCountry"></p>
 	  </div>
-	  <div id="postMessage">
+	  <div id="homePostMessage" class="postMessage">
 	    <h1>Post message</h1>
-	    <form id="postMessageForm">	
+	    <form id="homePostMessageForm" class="postMessageForm">	
 	      <div class="formRow">
 		<div class="inputContainer">
-		  <textarea id="message" placeholder="Write message here" required></textarea>
+		  <textarea id="homeMessage" placeholder="Write message here" required></textarea>
 		</div>
 	      </div>      
 	      <div class="formRow">
 		<div class="inputContainer">
-		  <button id="postMessageSubmit" type="submit">Post message</button>
+		  <button id="homePostMessageSubmit" type="submit">Post message</button>
 		</div>
 	      </div>
 	    </form>
@@ -178,7 +167,7 @@
 	    <form id="searchProfileForm">
 	      <div class="formRow">
 		<div class="inputContainer">
-		  <input id="profileEmail" type="email" required></input>
+		  <input id="profileEmail" type="email" placeholder="Type email here" required></input>
 		</div>
 		<div class="inputContainer">
 		  <button id="submitSearchProfile" type="submit">Search</button>
@@ -186,36 +175,26 @@
 	      </div>    
 	    </form>
 	  </div>
-	  <div id="searchProfileInformation">
+	  <div id="browseProfileInformation" class="profileInformation">
 	    <h1>Profile</h1>
 	    <h2>Profile information</h2>
-	    <p id="searchProfileInfoName">
-	      <span>Name: </span>
-	    </p>
-	    <p id="searchProfileInfoEmail">	      
-	      <span>Email: </span>
-	    </p>
-	    <p id="searchProfileInfoGender">	      
-	      <span>Gender: </span>
-	    </p>
-	    <p id="searchProfileInfoCity">	      
-	      <span>City: </span>
-	    </p>
-	    <p id="searchProfileInfoCountry">	      
-	      <span>Country: </span>
-	    </p>
+	    <p id="browseProfileInfoName"></p>
+	    <p id="browseProfileInfoEmail"></p>
+	    <p id="browseProfileInfoGender"></p>
+	    <p id="browseProfileInfoCity"></p>
+	    <p id="browseProfileInfoCountry"></p>
 	  </div>
-	  <div id="postMessage">
+	  <div id="postMessage" class="postMessage">
 	    <h1>Post message</h1>
-	    <form id="postMessageForm">	
+	    <form id="browsePostMessageForm" class="postMessageForm">	
 	      <div class="formRow">
 		<div class="inputContainer">
-		  <textarea id="message" placeholder="Write message here" required></textarea>
+		  <textarea id="browseMessage" placeholder="Write message here" required></textarea>
 		</div>
 	      </div>      
 	      <div class="formRow">
 		<div class="inputContainer">
-		  <button id="postMessageSubmit" type="submit">Post message</button>
+		  <button id="browserPostMessageSubmit" type="submit">Post message</button>
 		</div>
 	      </div>
 	    </form>
@@ -266,7 +245,9 @@
       </div>
     </div>
   </script>
-</head>
+  <script type="text/view" id="alertMessageView">
+    <div id="alertMessage"></div>
+  </script>
 <body>
 </body>
 </html>

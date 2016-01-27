@@ -1,6 +1,32 @@
-var displayView = function()
+var displayView = function(viewId)
 {
-    //the code to display a viewrequired
+    var alertMessageView = document.getElementById("alertMessageView");
+
+    document.getElementsByTagName("body")[0].innerHTML = alertMessageView.innerHTML;
+   
+    var view = document.getElementById(viewId);
+    
+    document.getElementsByTagName("body")[0].innerHTML += view.innerHTML;
+}
+
+var displayMessage = function(message, type)
+{
+    setTimeout(hideMessage, 3000);
+
+    var alertMessage = document.getElementById("alertMessage");
+
+    alertMessage.className = type;
+
+    alertMessage.innerHTML = message;
+}
+
+var hideMessage = function()
+{
+    var alertMessage = document.getElementById("alertMessage");
+
+    alertMessage.className = "";
+
+    alertMessage.innerHTML = "";
 }
 
 var signOut = function()
@@ -32,34 +58,6 @@ var loginSubmit = function()
     }
 }
 
-var changePasswordSubmit = function()
-{
-    var oldPassword = document.getElementById("oldPassword");
-    var newPassword = document.getElementById("newPassword");
-    var repeatNewPassword = document.getElementById("repeatNewPassword");
-
-    if (validatePasswordLength(oldPassword) && validatePasswordLength(newPassword) && validatePasswordMatch(newPassword, repeatNewPassword))
-    {
-	var response = serverstub.changePassword(localStorage.getItem("userToken"), oldPassword.value, newPassword.value);
-
-	if (response.success)
-	{
-	    alert(response.message);
-	}
-	else
-	{
-	    oldPassword.setCustomValidity(response.message);
-	    oldPassword.checkValidity();
-	    
-	    return false;
-	}
-    }
-    else
-    {
-	return false;
-    }
-}
-
 var signupSubmit = function()
 {
     var signupPassword = document.getElementById("signupPassword");
@@ -81,36 +79,91 @@ var signupSubmit = function()
 
 	if (response.success)
 	{
-	    alert(response.message);
+	    displayMessage(response.message, "infoMessage");
+	    
+	    document.getElementById("signupForm").reset();
 	}
 	else
 	{ 
 	    var signupEmail = document.getElementById("signupEmail");
 	    
 	    signupEmail.setCustomValidity(response.message);
-	    signupEmail.checkValidity();
-	    
-	    return false;
 	}
     }
-    else
-    {
-	return false;
-    }
+
+    return false;
 }
 
-var postMessageSubmit = function()
+var changePasswordSubmit = function()
 {
-    var message = document.getElementById("message");
+    var oldPassword = document.getElementById("oldPassword");
+    var newPassword = document.getElementById("newPassword");
+    var repeatNewPassword = document.getElementById("repeatNewPassword");
+
+    if (validatePasswordLength(oldPassword) && validatePasswordLength(newPassword) && validatePasswordMatch(repeatNewPassword, newPassword))
+    {
+	var response = serverstub.changePassword(localStorage.getItem("userToken"), oldPassword.value, newPassword.value);
+
+	if (response.success)
+	{
+	    displayMessage(response.message, "infoMessage");
+
+	    document.getElementById("changePasswordForm").reset();
+	}
+	else
+	{
+	    oldPassword.setCustomValidity(response.message);
+	}
+    }
+	    
+    return false;
+}
+
+var homePostMessageSubmit = function()
+{
+    var message = document.getElementById("homeMessage");
     
     postMessage(message.value, getEmail());
+
+    loadMessages(getEmail(), "homeMessages");
+
+    return false;
+}
+
+var searchProfileSubmit = function()
+{
+    var profileEmail = document.getElementById("profileEmail");
+    
+    var profileInformation = loadProfileInformation(profileEmail.value);
+
+    if (profileInformation != undefined)
+    {
+	appendSearchProfileInformation(profileInformation);
+
+	loadMessages(profileEmail.value, "browseMessages");
+
+	localStorage.setItem("currentBrowseEmail", profileEmail.value);
+    }
+
+    return false;
+}
+
+var browsePostMessageSubmit = function()
+{
+    var message = document.getElementById("browseMessage");
+    
+    postMessage(message.value, localStorage.getItem("currentBrowseEmail"));
+
+    loadMessages(localStorage.getItem("currentBrowseEmail"), "browseMessages");
+
+    return false;
 }
     
 var postMessage = function(message, email)
 {	
     var response = serverstub.postMessage(localStorage.getItem("userToken"), message, email);
 
-    alert(response.message);
+    displayMessage(response.message, "infoMessage");
 }
 
 var validatePasswordLength = function(passwordElement)
@@ -171,10 +224,6 @@ var menuItemClick = function(menuItem)
     {
 	view = document.getElementById("accountView"); 
     }
-    else if (menuItem.getAttribute("id") == "signOut")
-    {
-	signOut();
-    }
     
     view.classList.add("selectedContent");
 }
@@ -186,37 +235,37 @@ var loadProfileInformation = function(email)
     if (response.success)
     {
 	var profileInformation = {
-	    name: document.createTextNode(response.data.firstname + " " + response.data.familyname),
-	    email: document.createTextNode(response.data.email),
-	    gender: document.createTextNode(response.data.gender),
-	    city: document.createTextNode(response.data.city),
-	    country: document.createTextNode(response.data.country),
+	    name: response.data.firstname + " " + response.data.familyname,
+	    email: response.data.email,
+	    gender: response.data.gender,
+	    city: response.data.city,
+	    country: response.data.country,
 	};
 
 	return profileInformation;
     }
     else
     {
-	alert(response.message);
+	displayMessage(response.message, "errorMessage");
     }
 }
 
 var appendProfileInformation = function(profileInformation)
 {    
-    document.getElementById("profileInfoName").appendChild(profileInformation.name);
-    document.getElementById("profileInfoEmail").appendChild(profileInformation.email);
-    document.getElementById("profileInfoGender").appendChild(profileInformation.gender);
-    document.getElementById("profileInfoCity").appendChild(profileInformation.city);
-    document.getElementById("profileInfoCountry").appendChild(profileInformation.country);
+    document.getElementById("profileInfoName").innerHTML = "<span>Name:</span> " + profileInformation.name;
+    document.getElementById("profileInfoEmail").innerHTML = "<span>Email:</span> " + profileInformation.email;
+    document.getElementById("profileInfoGender").innerHTML = "<span>Gender:</span> " + profileInformation.gender;
+    document.getElementById("profileInfoCity").innerHTML = "<span>City:</span> " + profileInformation.city;
+    document.getElementById("profileInfoCountry").innerHTML = "<span>Country:</span> " + profileInformation.country;
 }
 
 var appendSearchProfileInformation = function(profileInformation)
 {    
-    document.getElementById("searchProfileInfoName").appendChild(profileInformation.name);
-    document.getElementById("searchProfileInfoEmail").appendChild(profileInformation.email);
-    document.getElementById("searchProfileInfoGender").appendChild(profileInformation.gender);
-    document.getElementById("searchProfileInfoCity").appendChild(profileInformation.city);
-    document.getElementById("searchProfileInfoCountry").appendChild(profileInformation.country);
+    document.getElementById("browseProfileInfoName").innerHTML = "<span>Name:</span> " + profileInformation.name;
+    document.getElementById("browseProfileInfoEmail").innerHTML = "<span>Email:</span> " + profileInformation.email;
+    document.getElementById("browseProfileInfoGender").innerHTML = "<span>Gender:</span> " + profileInformation.gender;
+    document.getElementById("browseProfileInfoCity").innerHTML = "<span>City:</span> " + profileInformation.city;
+    document.getElementById("browseProfileInfoCountry").innerHTML = "<span>Country:</span> " + profileInformation.country;
 }
 
 var loadMessages = function(email, elementId)
@@ -234,7 +283,7 @@ var loadMessages = function(email, elementId)
     }
     else
     {
-	alert(response.message);
+	displayMessage(response.message, "errorMessage");
     }
 }
 
@@ -263,21 +312,6 @@ var createMessage = function(writer, content, elementId)
     document.getElementById(elementId).appendChild(container);
 }
 
-var searchProfileSubmit = function()
-{
-    var profileEmail = document.getElementById("profileEmail");
-    
-    var profileInformation = loadProfileInformation(profileEmail.value);
-
-    appendSearchProfileInformation(profileInformation);
-
-    loadMessages(profileEmail.value, "browseMessages");
-
-    localStorage.setItem("currentBrowseEmail", profileEmail.value);
-
-    return false;
-}
-
 var getEmail = function()
 {
     var response = serverstub.getUserDataByToken(localStorage.getItem("userToken"));
@@ -288,15 +322,8 @@ var getEmail = function()
     }
     else
     {
-	alert(response.message);
+	displayMessage(response.message, "errorMessage");
     }
-}
-
-var loadView = function(viewId)
-{
-    var view = document.getElementById(viewId);
-	
-    document.getElementsByTagName("body")[0].innerHTML = view.innerHTML;
 }
 
 var clearCustomValidityOnInput = function(element)
@@ -384,7 +411,7 @@ window.onload = function()
 {
     if (localStorage.getItem("userToken") === null)
     {	
-	loadView("welcomeView");
+	displayView("welcomeView");
 
 	setupLoginForm();
 
@@ -392,7 +419,7 @@ window.onload = function()
     }
     else
     {
-	loadView("profileView");
+	displayView("profileView");
 
 	loadProfile(getEmail(), "homeMessages");
 
@@ -400,11 +427,15 @@ window.onload = function()
 
 	setupChangePasswordForm();
 
-	document.getElementById("postMessageForm").onsubmit = postMessageSubmit;
+	document.getElementById("homePostMessageForm").onsubmit = homePostMessageSubmit;
 
 	setupRefreshButton(document.getElementById("homeRefreshButton"), getEmail(), "homeMessages");
 	setupRefreshButton(document.getElementById("browseRefreshButton"), localStorage.getItem("currentBrowseEmail"), "browseMessages");
 
 	document.getElementById("searchProfileForm").onsubmit = searchProfileSubmit;
+
+	document.getElementById("browsePostMessageForm").onsubmit = browsePostMessageSubmit;
+
+	document.getElementById("signOut").onclick = signOut;
     }
 }

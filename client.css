@@ -1,7 +1,34 @@
-#welcome
+body
+{
+    background-color: #aaa;
+}
+
+#alertMessage
+{
+    width: 590px;
+    min-height: 20px;
+    padding: 5px;
+    margin: 100px auto 0px auto;
+    font-family: Arial;
+    font-size: 15px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.infoMessage
+{
+    background-color: #eeee00;
+}
+
+.errorMessage
+{
+    background-color: #ff0000;
+}
+
+.view
 {
     width: 600px;
-    margin: 100px auto;
+    margin: 10px auto;
 }
 
 #logo
@@ -30,12 +57,6 @@
     float: right;
     padding: 10px;
     background-color: #FFF;
-}
-
-#profile
-{
-    width: 600px;
-    margin: 100px auto;
 }
 
 #menu
@@ -73,25 +94,27 @@
 
 #signOut
 {
+    margin-right: 10px;
+    padding: 5px 20px;
+    font-family: Arial;
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
     float: right;
     background-color: #aa0000;
+    color: #fff;
 }
 
 #signOut:hover
 {
-    float: right;
     background-color: #dd0000;
+    cursor: pointer;
 }
 
 #contentContainer
 {
     width: 600px;
     height: 535px;
-}
-
-body
-{
-    background-color: #aaa;
 }
 
 div h1
@@ -192,7 +215,7 @@ div.selectedContent
     background-color: transparent;
 }
 
-#profileInformation
+.profileInformation
 {
     width: 230px;
     height: 180px;
@@ -210,12 +233,12 @@ p
     padding: 0;
 }
 
-#profileInformation p span
+.profileInformation p span
 {
     font-weight: bold;
 }
 
-#postMessage
+.postMessage
 {
     width: 320px;
     height: 180px;
@@ -226,22 +249,22 @@ p
     background-color: #FFF;
 }
 
-#postMessageForm div.formRow
+.postMessageForm div.formRow
 {
     height: auto;
 }
 
-#postMessageForm div.formRow .labelContainer
+.postMessageForm div.formRow .labelContainer
 {
     float: none;
 }
 
-#postMessageForm div.formRow .inputContainer
+.postMessageForm div.formRow .inputContainer
 {
     float: none;
 }
 
-#postMessageForm div.formRow .inputContainer textarea
+.postMessageForm div.formRow .inputContainer textarea
 {
     width: 312px;
     height: 98px;
