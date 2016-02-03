@@ -8,7 +8,7 @@ body
     width: 590px;
     min-height: 20px;
     padding: 5px;
-    margin: 100px auto 0px auto;
+    margin: 60px auto 10px auto;
     font-family: Arial;
     font-size: 15px;
     font-weight: bold;
@@ -28,13 +28,13 @@ body
 .view
 {
     width: 600px;
-    margin: 10px auto;
+    margin: 0 auto;
 }
 
 #logo
 {
     width: 340px;
-    height: 535px;
+    height: 400px;
     margin-right: 10px;
     float: left;
     background: #fff url("wimage.png") no-repeat;
@@ -42,9 +42,9 @@ body
 
 #login
 {
-    width: 230px;
-    height: 120px;
-    padding: 10px;
+    width: 240px;
+    height: 110px;
+    padding: 5px;
     float: right;
     margin-bottom: 10px;
     background-color: #FFF;
@@ -52,10 +52,10 @@ body
 
 #signup
 {
-    width: 230px;
-    height: 365px;
+    width: 240px;
+    height: 260px;
     float: right;
-    padding: 10px;
+    padding: 5px;
     background-color: #FFF;
 }
 
@@ -120,10 +120,10 @@ body
 div h1
 {
     margin: 0;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
     padding: 5px 0;
     font-family: Arial;
-    font-size: 18px;
+    font-size: 15px;
     font-weight: bold;
     text-align: center;
     background-color: #000;
@@ -145,7 +145,7 @@ div h2
 div.formRow
 {
     height: 20px;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
     font-family: Arial;
     font-size: 12px;
     clear: both;
@@ -353,4 +353,9 @@ div.messageContainer p
     float: right;
     padding: 10px;
     background-color: #FFF;
+}
+
+.hideBrowseElement
+{
+    display: none;
 }

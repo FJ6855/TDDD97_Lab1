@@ -35,7 +35,7 @@ var signOut = function()
 
     localStorage.removeItem("userToken");
 
-    location.reload();
+    loadSignedOut();
 }
 
 var loginSubmit = function()
@@ -48,22 +48,24 @@ var loginSubmit = function()
     if (response.success)
     {
 	localStorage.setItem("userToken", response.data);
+	
+	loadSignedIn();
     }
     else
     {
 	loginEmail.setCustomValidity(response.message);
 	loginEmail.checkValidity();
-
-	return false;
     }
+
+    return false;
 }
 
 var signupSubmit = function()
 {
     var signupPassword = document.getElementById("signupPassword");
     var repeatPassword = document.getElementById("repeatPassword");
-    
-    if (validatePasswordLength(signupPassword) && validatePasswordMatch(signupPassword, repeatPassword))
+
+    if (validPasswordLength(signupPassword.value) && validPasswordMatch(signupPassword.value, repeatPassword.value))
     {
 	var user = {
 	    email: document.getElementById("signupEmail").value,
@@ -85,9 +87,7 @@ var signupSubmit = function()
 	}
 	else
 	{ 
-	    var signupEmail = document.getElementById("signupEmail");
-	    
-	    signupEmail.setCustomValidity(response.message);
+	    displayMessage(response.message, "errorMessage");
 	}
     }
 
@@ -100,7 +100,7 @@ var changePasswordSubmit = function()
     var newPassword = document.getElementById("newPassword");
     var repeatNewPassword = document.getElementById("repeatNewPassword");
 
-    if (validatePasswordLength(oldPassword) && validatePasswordLength(newPassword) && validatePasswordMatch(repeatNewPassword, newPassword))
+    if (validPasswordLength(newPassword.value) && validPasswordMatch(newPassword.value, repeatNewPassword.value))
     {
 	var response = serverstub.changePassword(localStorage.getItem("userToken"), oldPassword.value, newPassword.value);
 
@@ -112,7 +112,7 @@ var changePasswordSubmit = function()
 	}
 	else
 	{
-	    oldPassword.setCustomValidity(response.message);
+	    displayMessage(response.message, "errorMessage");
 	}
     }
 	    
@@ -143,9 +143,21 @@ var searchProfileSubmit = function()
 	loadMessages(profileEmail.value, "browseMessages");
 
 	localStorage.setItem("currentBrowseEmail", profileEmail.value);
+
+	showBrowseElements();
     }
 
     return false;
+}
+
+var showBrowseElements = function()
+{
+    var browseElements = document.getElementsByClassName("hideBrowseElement");
+
+    for (var i = browseElements.length - 1; i >= 0; --i)
+    {
+	browseElements[i].classList.remove("hideBrowseElement");
+    }
 }
 
 var browsePostMessageSubmit = function()
@@ -166,36 +178,14 @@ var postMessage = function(message, email)
     displayMessage(response.message, "infoMessage");
 }
 
-var validatePasswordLength = function(passwordElement)
+var validPasswordLength = function(password)
 {
-    if (passwordElement.value.length < 6)
-    {
-	passwordElement.setCustomValidity("Password must be at least 6 characters long");
-
-	return false;
-    }
-    else
-    {
-	passwordElement.setCustomValidity("");
-
-	return true;
-    }
+    return (password.length >= 6);
 }
 
-var validatePasswordMatch = function(repeatPasswordElement, passwordElement)
+var validPasswordMatch = function(repeatPassword, password)
 {
-    if (passwordElement.value != repeatPasswordElement.value)
-    {
-	repeatPasswordElement.setCustomValidity("Password doesn't match");
-
-	return false;
-    }
-    else
-    {
-	repeatPasswordElement.setCustomValidity("");
-
-	return true;
-    }
+    return (password == repeatPassword);
 }
 
 var menuItemClick = function(menuItem)
@@ -338,15 +328,21 @@ var validatePasswordLengthOnInput = function(element)
 {
     element.oninput = function()
     {
-	validatePasswordLength(element);
+	if (validPasswordLength(element.value))
+	    element.setCustomValidity("");
+	else
+	    element.setCustomValidity("Password must be at least 6 characters long.");
     }
 }
 
 var validatePasswordMatchOnInput = function(element, elementToMatch)
 {
-    element.oninput = function()
+    elementToMatch.oninput = function()
     {
-	validatePasswordMatch(element, elementToMatch);
+	if (validPasswordMatch(element.value, elementToMatch.value))
+	    elementToMatch.setCustomValidity("");
+	else
+	    elementToMatch.setCustomValidity("Password doesn't match.");
     }
 }
 
@@ -363,9 +359,7 @@ var setupSignUpForm = function()
 
     validatePasswordLengthOnInput(document.getElementById("signupPassword"));
 
-    validatePasswordMatchOnInput(document.getElementById("repeatPassword"), document.getElementById("signupPassword"));
-    
-    clearCustomValidityOnInput(document.getElementById("signupEmail"));
+    validatePasswordMatchOnInput(document.getElementById("signupPassword"), document.getElementById("repeatPassword"));
 }
 
 var setupMenuItems = function()
@@ -385,11 +379,9 @@ var setupChangePasswordForm = function()
 {
     document.getElementById("changePasswordForm").onsubmit = changePasswordSubmit;
 
-    validatePasswordLengthOnInput(document.getElementById("oldPassword"));
-
     validatePasswordLengthOnInput(document.getElementById("newPassword"));
 	
-    validatePasswordMatchOnInput(document.getElementById("repeatNewPassword"), document.getElementById("newPassword"));
+    validatePasswordMatchOnInput(document.getElementById("newPassword"), document.getElementById("repeatNewPassword"));
 }
 
 var loadProfile = function(email, wallId)
@@ -407,35 +399,45 @@ var setupRefreshButton = function(element, email, wallId)
     }
 }
 
+var loadSignedOut = function()
+{    
+    displayView("welcomeView");
+
+    setupLoginForm();
+
+    setupSignUpForm();
+}
+
+var loadSignedIn = function()
+{
+    displayView("profileView");
+
+    loadProfile(getEmail(), "homeMessages");
+
+    setupMenuItems();
+
+    setupChangePasswordForm();
+
+    document.getElementById("homePostMessageForm").onsubmit = homePostMessageSubmit;
+
+    setupRefreshButton(document.getElementById("homeRefreshButton"), getEmail(), "homeMessages");
+    setupRefreshButton(document.getElementById("browseRefreshButton"), localStorage.getItem("currentBrowseEmail"), "browseMessages");
+
+    document.getElementById("searchProfileForm").onsubmit = searchProfileSubmit;
+
+    document.getElementById("browsePostMessageForm").onsubmit = browsePostMessageSubmit;
+
+    document.getElementById("signOut").onclick = signOut;
+}
+
 window.onload = function()
 {
     if (localStorage.getItem("userToken") === null)
     {	
-	displayView("welcomeView");
-
-	setupLoginForm();
-
-	setupSignUpForm();
+	loadSignedOut();
     }
     else
     {
-	displayView("profileView");
-
-	loadProfile(getEmail(), "homeMessages");
-
-	setupMenuItems();
-
-	setupChangePasswordForm();
-
-	document.getElementById("homePostMessageForm").onsubmit = homePostMessageSubmit;
-
-	setupRefreshButton(document.getElementById("homeRefreshButton"), getEmail(), "homeMessages");
-	setupRefreshButton(document.getElementById("browseRefreshButton"), localStorage.getItem("currentBrowseEmail"), "browseMessages");
-
-	document.getElementById("searchProfileForm").onsubmit = searchProfileSubmit;
-
-	document.getElementById("browsePostMessageForm").onsubmit = browsePostMessageSubmit;
-
-	document.getElementById("signOut").onclick = signOut;
+	loadSignedIn();
     }
 }
